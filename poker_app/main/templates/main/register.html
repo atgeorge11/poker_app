@@ -1,0 +1,12 @@
+{% if form.errors %}
+    <p>This username is already taken. Try again.</p>
+{% endif %}
+
+<form method="post" action="{% url 'main:register' %}">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button name="submit">Register</button>
+    <input type="hidden" name="next" value="{% url 'main:index' %}">
+</form>
+
+<a href="{% url 'main:index' %}">Back</a>

@@ -1,0 +1,40 @@
+<p>Poker</p>
+
+{% if user.is_authenticated %}
+
+    <div>
+        <p>Join a game:</p>
+        <form id="join_form" method='post'>
+            {% csrf_token %}
+            <input type="text" placeholder="Enter your game's name' here" id="join_game">
+            <button type="submit" id="join_submit">Submit</button>
+    </div>
+
+    <div>
+        <p>Create a game:</p>
+        <form id="create_form" method='post'>
+            {% csrf_token %}
+            <input type="text" placeholder="Enter a game name here" id="create_game">
+            <button type="submit" id="create_submit">Submit</button>
+        </form>
+    </div>
+
+    <div>
+        <a href="{% url 'main:log_out' %}">Log out</a>
+    </div>
+
+{% else %}
+
+    <div>
+        <a href="{% url 'main:log_in' %}">Log in</a>
+    </div>
+
+    <div>
+        <a href="{% url 'main:register' %}">Create an account</a>
+    </div>
+
+    <script>
+        document.getElement
+    </script>
+
+{% endif %}

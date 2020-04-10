@@ -1,0 +1,12 @@
+{% if not_found %}
+<p>There is no user with that name. Try again.</p>
+{% endif %}
+
+<form method="post" action="{% url 'main:log_in' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button name="submit">Log in</button>
+    <input type="hidden" name="next" value="{% url 'main:index' %}" />
+</form>
+<a href="{% url 'main:index' %}">Back</a>
