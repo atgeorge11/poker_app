@@ -4,17 +4,18 @@
 
     <div>
         <p>Join a game:</p>
-        <form id="join_form" method='post'>
+        <form id="join_form" method='post' action="{% url 'game:join' %}">
             {% csrf_token %}
-            <input type="text" placeholder="Enter your game's name' here" id="join_game">
+            <input type="text" placeholder="Enter your game's name' here" id="join_game" name="game_name_join">
             <button type="submit" id="join_submit">Submit</button>
+        </form>
     </div>
 
     <div>
         <p>Create a game:</p>
-        <form id="create_form" method='post'>
+        <form id="create_form" method='post' action="{% url 'game:create' %}">
             {% csrf_token %}
-            <input type="text" placeholder="Enter a game name here" id="create_game">
+            <input type="text" placeholder="Enter a game name here" id="create_game" name="game_name_create">
             <button type="submit" id="create_submit">Submit</button>
         </form>
     </div>
