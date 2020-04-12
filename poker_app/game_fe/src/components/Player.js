@@ -2,12 +2,14 @@ import React from 'react';
 
 const Player = props => (
     <div>
-        Player
         <div>
             {props.player.player}
         </div>
         <div>
-            {props.player.amount}
+            {props.player.chips}
+        </div>
+        <div>
+            {props.dealer ? "Dealer" : ""}
         </div>
     </div>
 )

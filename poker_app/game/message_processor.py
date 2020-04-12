@@ -7,16 +7,19 @@ def process_message (message, game_state, username, user_type):
         return {
             'type': 'user_type_response',
             'user_type': user_type,
+            'id': len(game_state.players) - 1,
             'players': game_state.players
         }
+
     #Process start game requests
     elif message['type'] == "start_game":
         #Start the game
-        game_state.playing = True
+        game_state.start_game()
         return {
             'type': 'play',
             'state': {
-                'playing': True
+                'playing': True,
+                'dealer': game_state.dealer
             }
         }
 

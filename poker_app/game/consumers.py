@@ -10,6 +10,7 @@ class GameConsumer(WebsocketConsumer):
         self.game_name = self.scope['url_route']['kwargs']['game_name']
         self.game_group_name = 'game_%s' % self.game_name
         self.username = self.scope['user'].username
+        self.id = None
 
         #Deny connection if game doesn't exist or is already in play
         if self.game_name not in game_states or game_states[self.game_name].playing == True:
@@ -82,6 +83,14 @@ class GameConsumer(WebsocketConsumer):
     #Receive message from room group
     def message(self, event):
         message = event['message']
+
+        #Grab id if user_type_request
+        if self.id is None and message['type'] == "user_type_response":
+            self.id = message['id']
+
+        #Insert player's hand if possible
+        elif str(self.id) in self.game_state.hands:
+            message['state']['hand'] = self.game_state.hands[str(self.id)]
 
         #Send message to WebSocket
         self.send(text_data=json.dumps({

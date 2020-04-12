@@ -15,7 +15,6 @@ const createSocket = function (gameName) {
 
     socket.onmessage = function(e) {
         const message = JSON.parse(e.data);
-        console.log("in socket", message);
         const event = new CustomEvent('message', {detail: message})
         document.getElementById("root").dispatchEvent(event)
     }
