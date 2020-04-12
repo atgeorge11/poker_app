@@ -7,8 +7,17 @@ const createSocket = function (gameName) {
         + '/'
     );
 
+    socket.onopen = function(e) {
+        socket.send(JSON.stringify({
+            'type': "user_type_request"
+        }))
+    }
+
     socket.onmessage = function(e) {
-        console.log(JSON.parse(e.data));
+        const message = JSON.parse(e.data);
+        console.log("in socket", message);
+        const event = new CustomEvent('message', {detail: message})
+        document.getElementById("root").dispatchEvent(event)
     }
 
     socket.onclose = function(e) {

@@ -1,17 +1,18 @@
 import React from 'react';
 import createSocket from './sockets';
+import Game from './components/Game';
 
-function App() {
+const App = props => {
 
   let gameName = window.location.href;
   gameName = gameName.match(/gameroom\/(.+)\/$/)[1];
-  console.log(gameName);
   const socket = createSocket(gameName);
 
   return (
     <div className="App">
       GAME!
-      <button onClick={() => {socket.send("a message")}}>Send a message</button>
+      <Game socket={socket}/>
+      <button onClick={() => {socket.send({message: "a message"})}}>Send a message</button>
     </div>
   );
 }
