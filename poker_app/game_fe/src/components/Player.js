@@ -9,7 +9,11 @@ const Player = props => (
             {props.player.chips}
         </div>
         <div>
-            {props.dealer ? "Dealer" : ""}
+            {props.dealer ? "Dealer" : " "}
+        </div>
+        <p> </p>
+        <div>
+            {props.player.bet === 0 ? " " : props.player.bet}
         </div>
     </div>
 )

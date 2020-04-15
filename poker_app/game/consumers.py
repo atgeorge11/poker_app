@@ -2,8 +2,9 @@ import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
+import threading
+
 from .poker_logic.game_states import game_states
-from .message_processor import process_message
 
 class GameConsumer(WebsocketConsumer):
     def connect(self):
@@ -11,22 +12,15 @@ class GameConsumer(WebsocketConsumer):
         self.game_group_name = 'game_%s' % self.game_name
         self.username = self.scope['user'].username
         self.id = None
+        self.user_type = None
 
         #Deny connection if game doesn't exist or is already in play
         if self.game_name not in game_states or game_states[self.game_name].playing == True:
             return
 
-        #save reference to game_state
+        #save reference to game_state and message_processor
         self.game_state = game_states[self.game_name]
-
-        #Determine whether player is host by checking current number of players
-        if len(self.game_state.players) == 0:
-            self.user_type = 'host'
-        else:
-            self.user_type = 'guest'
-
-        #Add player to game model
-        self.game_state.generate_player(self.username, 1000, self.user_type)
+        self.message_processor = self.game_state.message_processor
 
         #Join game group
         async_to_sync(self.channel_layer.group_add)(
@@ -34,31 +28,40 @@ class GameConsumer(WebsocketConsumer):
             self.channel_name
         )
 
+        #Determine whether player is host by checking current number of players
+        if len(self.game_state.players) == 0:
+            self.user_type = 'host'
+            #Also give message_processor access to broadcast
+            self.message_processor.set_broadcast(self.produce_broadcast_function(self.channel_layer, self.game_group_name))
+        else:
+            self.user_type = 'guest'
+
+        #Add player to game model
+        self.game_state.generate_player(self.username, 1000, self.user_type)
+
         self.accept()
 
     def disconnect(self, close_code):
         #if player is host, end the game
         if self.user_type == 'host':
             #end game
-            pass        
+            pass
 
         #Remove player from game model
-        self.game_state.remove_player(self.username)
+        if self.game_state is not None:
+            self.game_state.remove_player(self.username)
 
         print('player leaving', self.game_state.players)
 
         #Send message to remaining players
-        async_to_sync(self.channel_layer.group_send)(
-            self.game_group_name,
-            {
-                'type': 'message',
-                'message': {
-                    'type': 'user_type_response',
-                    'user_type': self.user_type,
-                    'players': self.game_state.players
-                }
+        self.broadcast({
+            'type': 'message',
+            'message': {
+                'type': 'user_type_response',
+                'user_type': self.user_type,
+                'players': self.game_state.players
             }
-        )
+        })
 
         #Leave game group
         async_to_sync(self.channel_layer.group_discard)(
@@ -66,12 +69,20 @@ class GameConsumer(WebsocketConsumer):
             self.channel_name
         )
 
-    #Receive message from WebSocket
-    def receive(self, text_data):
-        data_json = json.loads(text_data)
-
-        message = process_message(data_json, self.game_state, self.username, self.user_type)
-
+    #produce a function to send a message to group
+    def produce_broadcast_function(self, channel_layer, game_group_name):
+        def broadcast (message):
+            async_to_sync(channel_layer.group_send)(
+                game_group_name,
+                    {
+                        'type': 'message',
+                        'message': message
+                    }
+                )
+        return broadcast
+    
+    #Send a message to group
+    def broadcast (self, message):
         async_to_sync(self.channel_layer.group_send)(
             self.game_group_name,
             {
@@ -80,17 +91,30 @@ class GameConsumer(WebsocketConsumer):
             }
         )
 
-    #Receive message from room group
+    #Receive message from WebSocket
+    def receive(self, text_data):
+        data_json = json.loads(text_data)
+        thread = threading.Thread(
+            target=self.message_processor.process_message,
+            args=(data_json, self.game_state, self.username, self.user_type)
+        )
+        thread.start()
+        #self.message_processor.process_message(data_json, self.game_state, self.username, self.user_type)
+
+
+    #Receive message from group
     def message(self, event):
         message = event['message']
 
         #Grab id if user_type_request
         if self.id is None and message['type'] == "user_type_response":
             self.id = message['id']
-
-        #Insert player's hand if possible
-        elif str(self.id) in self.game_state.hands:
-            message['state']['hand'] = self.game_state.hands[str(self.id)]
+        elif message['type'] == 'play':
+            #Insert player's hand if possible
+            if self.game_state.hand_controller is not None and str(self.id) in self.game_state.hand_controller.hands:
+                message['state']['hand'] = self.game_state.hand_controller.hands[str(self.id)]
+            else:
+                message['state']['hand'] = None
 
         #Send message to WebSocket
         self.send(text_data=json.dumps({
