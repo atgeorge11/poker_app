@@ -49,7 +49,7 @@ class GameConsumer(WebsocketConsumer):
 
         #Remove player from game model
         if self.game_state is not None:
-            self.game_state.remove_player(self.username)
+            self.game_state.remove_player(self.game_state.players[self.id])
 
         print('player leaving', self.game_state.players)
 
@@ -91,16 +91,14 @@ class GameConsumer(WebsocketConsumer):
             }
         )
 
-    #Receive message from WebSocket
+    #Receive message from WebSocket; starts a new thread to run the game logic
     def receive(self, text_data):
         data_json = json.loads(text_data)
         thread = threading.Thread(
             target=self.message_processor.process_message,
-            args=(data_json, self.game_state, self.username, self.user_type)
+            args=(data_json, self.username, self.user_type)
         )
         thread.start()
-        #self.message_processor.process_message(data_json, self.game_state, self.username, self.user_type)
-
 
     #Receive message from group
     def message(self, event):

@@ -5,8 +5,11 @@ import Game from './components/Game';
 const App = props => {
 
   let gameName = window.location.href;
-  gameName = gameName.match(/gameroom\/(.+)\/$/)[1];
-  const socket = createSocket(gameName);
+  let socket = null;
+  if (gameName.match(/localhost:8000/)) {
+    gameName = gameName.match(/gameroom\/(.+)\/$/)[1];
+    socket = createSocket(gameName);
+  }
 
   return (
     <div className="App">

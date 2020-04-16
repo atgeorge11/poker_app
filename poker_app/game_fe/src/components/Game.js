@@ -1,5 +1,6 @@
 import React from 'react';
 import Player from './Player';
+import Table from './Table';
 import Me from './Me';
 
 class Game extends React.Component {
@@ -11,7 +12,13 @@ class Game extends React.Component {
             username: null,
             id: null,
             playing: false,
-            players: []
+            listening: false,
+            players: [],
+            currentPlayer: null,
+            playersWithCards: [],
+            table: [],
+            pot: 0,
+            blind: 10
         }
 
         //Add event listener to listen for websocket messages
@@ -68,6 +75,27 @@ class Game extends React.Component {
         return output;
     }
 
+    submitBet (bet) {
+        console.log("submitting bet");
+        this.props.socket.send({
+            'type': 'bet',
+            'bet': bet
+        })
+    }
+
+    submitCall () {
+        this.props.socket.send({
+            'type': 'call'
+        })
+    }
+
+    submitFold () {
+        this.props.socket.send({
+            'type': 'fold',
+            'id': this.state.id
+        })
+    }
+
     render() {
         if (this.state.id === null) {
             return (<div>Joining game</div>)
@@ -90,7 +118,11 @@ class Game extends React.Component {
                     </tr>
                 </table>
 
-                <p></p>
+                <p> </p>
+
+                <Table table={this.state.table} pot={this.state.pot} />
+
+                <p> </p>
 
                 <div>
                     {console.log("hand", this.state.hand)}
@@ -98,10 +130,15 @@ class Game extends React.Component {
                         data={this.state.players[this.state.id]}
                         dealer={(this.state.id === this.state.dealer)}
                         hand={this.state.hand ? this.state.hand : []}
+                        blind={this.state.blind}
+                        submitCall={this.submitCall.bind(this)}
+                        submitBet={this.submitBet.bind(this)}
+                        submitFold={this.submitFold.bind(this)}
+                        myTurn={this.state.listening && this.state.id === this.state.currentPlayer}
                     />
                 </div>
 
-                <p></p>
+                <p> </p>
 
                 {!this.state.playing && this.state.userType === 'host' ?
                     <button type="button" onClick={() => {

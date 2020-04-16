@@ -45,7 +45,7 @@ class Game_State():
     """remove a player from the game"""
     def remove_player(self, player):
         #Reconnect other noes of linked list before deleting
-        if len(self.players > 1):
+        if len(self.players) > 1:
             player.get_prev().set_next(player.get_next())
             player.get_next().set_prev(player.get_prev())
 
@@ -82,6 +82,10 @@ class Game_State():
 
     """starts a hand"""
     def start_hand(self):
+        #Reset every player's status to in
+        for player in self.players:
+            if player.status != 'out':
+                player.status = 'in'
         self.hand_controller = Hand_Controller(self)
         self.hand_controller.next()
 

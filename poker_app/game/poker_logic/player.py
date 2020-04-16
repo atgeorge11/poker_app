@@ -29,7 +29,7 @@ class Player():
 
     """make a bet"""
     def place_bet(self, amt):
-        self.chips -= amt
-        self.bet += amt
+        self.chips -= int(amt)
+        self.bet += int(amt)
     
     

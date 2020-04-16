@@ -1,6 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
+import BetSetter from './BetSetter';
 
-const Me = props => (
+const Me = props => {
+
+    console.log(props.myTurn);
+    
+    const [betting, setBetting] = useState(false);
+    let menu = (<div></div>);
+
+    if (props.myTurn) {
+        menu = (
+            <div>
+                <button onClick={props.submitCall}>Call</button>
+                <button onClick={() => {setBetting(true)}}>Raise</button>
+                <button onClick={props.submitFold}>Fold</button>
+            </div>
+        );
+    } 
+
+    return (
     <div>
         <div>
             {props.data.bet === 0 ? " " : props.data.bet}
@@ -23,7 +41,18 @@ const Me = props => (
                 </React.Fragment>
             ))}
         </div>
+        
+        {!betting ?
+            menu : 
+            <BetSetter
+                blind={props.blind}
+                chips={props.data.chips}
+                submitBet={props.submitBet}
+                cancel={() => {setBetting(false)}}
+            />
+        }
+
     </div>
-)
+)}
 
 export default Me;
