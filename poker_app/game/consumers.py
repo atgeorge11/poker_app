@@ -2,6 +2,8 @@ import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
+from .poker_logic.validator.validator import Validator
+
 import threading
 
 from .poker_logic.game_states import game_states
@@ -13,6 +15,12 @@ class GameConsumer(WebsocketConsumer):
         self.username = self.scope['user'].username
         self.id = None
         self.user_type = None
+
+        print(Validator.validate({
+            '1': ['4S', '5S'],
+            '2': ['3D', 'KH'],
+            '3': ['JC', 'JD']   
+        }, ['4H', 'JS', '3S', 'KS', '6S']))
 
         #Deny connection if game doesn't exist or is already in play
         if self.game_name not in game_states or game_states[self.game_name].playing == True:
