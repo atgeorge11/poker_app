@@ -2,6 +2,7 @@
 
 import time, math
 from .deck import Deck
+from .validator.validator import Validator
 
 class Hand_Controller():
 
@@ -143,6 +144,15 @@ class Hand_Controller():
         self.set_first_better()
         self.emit_response(True)
 
+    """Score the hand and return the scores to the client"""
+    def score_hand(self):
+        self.current_player = None
+        self.emit_response(False)
+        time.sleep(1)
+        scores = Validator.validate(self.hands, self.table)
+        print(scores)
+
+
     """run the next phase of the hand"""
     def next(self):
         phases = [
@@ -151,7 +161,8 @@ class Hand_Controller():
             self.deal,
             self.flop,
             self.river_or_turn,
-            self.river_or_turn
+            self.river_or_turn,
+            self.score_hand
         ]
 
         self.phase += 1

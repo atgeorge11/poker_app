@@ -1,22 +1,8 @@
+from .converter import Converter
+
 """methods to preprocess hands for validation"""
 
 class PreProcessor():
-
-    face_cards = {
-        '2': 2,
-        '3': 3,
-        '4': 4,
-        '5': 5,
-        '6': 6,
-        '7': 7,
-        '8': 8,
-        '9': 9,
-        '10': 10,
-        'J': 11,
-        'Q': 12,
-        'K': 13,
-        'A': 14
-    }
 
     @classmethod
     def preprocess (cls, hands, table):
@@ -40,6 +26,10 @@ class PreProcessor():
     @classmethod
     def preprocess_hand(cls, hand):
         """Preprocess an individual hand"""
+        #Repace 10s with 1s so comparative digits match
+        for idx, card in enumerate(hand):
+            if card[0] == '1':
+                hand[idx] = '1' + card[2]
         output = {}
         output['sets'] = cls.preprocess_sets(hand)
         output['flushes'] = cls.preprocess_flushes(hand)
@@ -97,24 +87,10 @@ class PreProcessor():
         return []
 
     @classmethod
-    def preprocess_straights(cls, hand):
-        """find straights"""
-        straight = []
-        last_card = None
-        if hand[-1][0] == 'A':
-            last_card = 1
-        for card in hand:
-            if last_card is None:
-                last_card = int(card[0])
-            elif int(card[0]) == last_card + 1:
-                pas
-
-    @classmethod
     def sort_cards(cls, hand):
         """Sort cards in a hand by value"""
-        hand.sort(key=cls.convert_face_card)
+        hand.sort(key=cls.sort_key)
 
     @classmethod
-    def convert_face_card(cls, card):
-        """Convert a face card to its numerical value"""
-        return cls.face_cards[card[0]]
+    def sort_key(cls, card):
+        return int(Converter.convert(card), 16)

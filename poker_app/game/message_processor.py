@@ -83,6 +83,3 @@ class Message_Processor():
         for id in self.game_state.hand_controller.hands:
             output[id] = True
         return output
-
-    def start_hand (self):
-        pass

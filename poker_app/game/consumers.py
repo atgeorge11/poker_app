@@ -17,10 +17,10 @@ class GameConsumer(WebsocketConsumer):
         self.user_type = None
 
         print(Validator.validate({
-            '1': ['4S', '5S'],
-            '2': ['3D', 'KH'],
+            '1': ['3S', 'JH'],
+            '2': ['3D', 'KD'],
             '3': ['JC', 'JD']   
-        }, ['4H', 'JS', '3S', 'KS', '6S']))
+        }, ['4S', '6S', '7S', 'JS', '5C']))
 
         #Deny connection if game doesn't exist or is already in play
         if self.game_name not in game_states or game_states[self.game_name].playing == True:
