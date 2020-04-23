@@ -2,6 +2,7 @@ import React from 'react';
 import Player from './Player';
 import Table from './Table';
 import Me from './Me';
+import Winner from './Winner';
 
 class Game extends React.Component {
     constructor (props) {
@@ -18,6 +19,7 @@ class Game extends React.Component {
             playersWithCards: [],
             table: [],
             pot: 0,
+            currentBet: 0,
             blind: 10
         }
 
@@ -52,6 +54,9 @@ class Game extends React.Component {
             //Messages updating the game state
             console.log(e.detail.message);
             let newState = e.detail.message.state;
+            if (e.detail.message.type === 'endGame') {
+                newState.winner = e.detail.message.winner;
+            }
             this.setState(newState);
         }
     }
@@ -76,7 +81,6 @@ class Game extends React.Component {
     }
 
     submitBet (bet) {
-        console.log("submitting bet");
         this.props.socket.send({
             'type': 'bet',
             'bet': bet
@@ -120,7 +124,10 @@ class Game extends React.Component {
 
                 <p> </p>
 
-                <Table table={this.state.table} pot={this.state.pot} />
+                {this.state.winner ? 
+                    <Winner username={this.state.players[this.state.winner].player}/> :
+                    <Table table={this.state.table} pot={this.state.pot} />
+                }
 
                 <p> </p>
 
@@ -131,7 +138,7 @@ class Game extends React.Component {
                         dealer={(this.state.id === this.state.dealer)}
                         hand={this.state.hand ? this.state.hand : []}
                         blind={this.state.blind}
-                        submitCall={this.submitCall.bind(this)}
+                        currentBet={this.state.currentBet}
                         submitBet={this.submitBet.bind(this)}
                         submitFold={this.submitFold.bind(this)}
                         myTurn={this.state.listening && this.state.id === this.state.currentPlayer}

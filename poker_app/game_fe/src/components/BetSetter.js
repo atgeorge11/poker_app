@@ -6,8 +6,10 @@ class BetSetter extends React.Component{
 
         console.log(props);
 
+        let newDigits = Math.min(props.currentBet - props.myBet, props.chips)
+
         this.state = {
-            digits: this.processNumber(props.blind)
+            digits: this.processNumber(newDigits)
         }
     }
 
@@ -49,13 +51,18 @@ class BetSetter extends React.Component{
         newDigits[idx] = newDigits[idx] % 10;
         let newTotal = this.processDigits(newDigits);
         console.log(newTotal);
-        if (newTotal <= this.props.chips && newTotal >= this.props.blind) {
+        
+        if (newTotal <= this.props.currentBet - this.props.myBet) {
             this.setState({
-                digits: newDigits
-            });
-        } else if (newTotal >= this.props.blind) {
+                digits: this.processNumber(Math.min(this.props.currentBet - this.props.myBet, this.props.chips))
+            })
+        } else if (newTotal <= this.props.currentBet - this.props.myBet + this.props.blind) {
             this.setState({
-                digits: this.processNumber(this.props.chips)
+                digits: this.processNumber(Math.min(this.props.currentBet - this.props.myBet + this.props.blind, this.props.chips))
+            })
+        } else {
+            this.setState({
+                digits: this.processNumber(Math.min(newTotal, this.props.chips))
             })
         }
     }
@@ -70,19 +77,30 @@ class BetSetter extends React.Component{
             newDigits[idx] = 9;
         }
         let newTotal = this.processDigits(newDigits);
-        console.log(newTotal);
-        if (newTotal <= this.props.chips && newTotal >= this.props.blind) {
+
+        if (newTotal <= this.props.currentBet - this.props.myBet) {
             this.setState({
-                digits: newDigits
-            });
-        } else if (newTotal <= this.props.chips) {
+                digits: this.processNumber(Math.min(this.props.currentBet - this.props.myBet, this.props.chips))
+            })
+        } else if (newTotal <= this.props.currentBet - this.props.myBet + this.props.blind) {
             this.setState({
-                digits: this.processNumber(this.props.blind)
+                digits: this.processNumber(Math.min(this.props.currentBet - this.props.myBet + this.props.blind, this.props.chips))
+            })
+        } else {
+            this.setState({
+                digits: this.processNumber(Math.min(newTotal, this.props.chips))
             })
         }
     }
 
     render () {
+        let call = Number(this.processDigits(this.state.digits)) === this.props.currentBet - this.props.myBet ? 'Call' : 'Raise';
+        if (Number(this.processDigits(this.state.digits)) === 0) {
+            call = "Check";
+        } else if (Number(this.processDigits(this.state.digits)) === this.props.chips) {
+            call = 'All-In';
+        }
+
         return (
             <div>
                 <table>
@@ -108,8 +126,7 @@ class BetSetter extends React.Component{
                         ))}
                     </tr>
                 </table>
-                <button onClick={() => {this.props.submitBet(this.processDigits(this.state.digits))}}>BET</button>
-                <button onClick={this.props.cancel}>Cancel</button>
+                <button onClick={() => {this.props.submitBet(this.processDigits(this.state.digits))}}>{call}</button>
             </div>
         )
     }

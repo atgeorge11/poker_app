@@ -1,3 +1,7 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
 {% if not_found %}
 <p>There is no user with that name. Try again.</p>
 {% endif %}
@@ -10,3 +14,5 @@
     <input type="hidden" name="next" value="{% url 'main:index' %}" />
 </form>
 <a href="{% url 'main:index' %}">Back</a>
+
+{% endblock content %}

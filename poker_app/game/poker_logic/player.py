@@ -31,5 +31,5 @@ class Player():
     def place_bet(self, amt):
         self.chips -= int(amt)
         self.bet += int(amt)
-    
-    
+        if self.chips == 0:
+            self.status = 'all_in'

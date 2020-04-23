@@ -3,19 +3,29 @@ import BetSetter from './BetSetter';
 
 const Me = props => {
 
-    console.log(props.myTurn);
-    
-    const [betting, setBetting] = useState(false);
     let menu = (<div></div>);
 
     if (props.myTurn) {
         menu = (
             <div>
-                <button onClick={props.submitCall}>Call</button>
-                <button onClick={() => {setBetting(true)}}>Raise</button>
+                <BetSetter
+                    blind={props.blind}
+                    chips={props.data.chips}
+                    currentBet={props.currentBet}
+                    myBet={props.data.bet}
+                    submitBet={props.submitBet}
+                />
                 <button onClick={props.submitFold}>Fold</button>
             </div>
-        );
+        )
+        
+        // (
+        //     <div>
+        //         <button onClick={props.submitCall}>{allIn ? "All-In" : "Call"}</button>
+        //         <button onClick={allIn ? null :() => {setBetting(true)}}>Raise</button>
+        //         <button onClick={props.submitFold}>Fold</button>
+        //     </div>
+        // );
     } 
 
     return (
@@ -41,16 +51,18 @@ const Me = props => {
                 </React.Fragment>
             ))}
         </div>
+        {menu}
         
-        {!betting ?
+        {/* {!betting ?
             menu : 
             <BetSetter
                 blind={props.blind}
                 chips={props.data.chips}
+                currentBet={props.currentBet}
                 submitBet={props.submitBet}
                 cancel={() => {setBetting(false)}}
             />
-        }
+        } */}
 
     </div>
 )}

@@ -1,3 +1,7 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
 {% if form.errors %}
     <p>This username is already taken. Try again.</p>
 {% endif %}
@@ -10,3 +14,5 @@
 </form>
 
 <a href="{% url 'main:index' %}">Back</a>
+
+{% endblock content %}

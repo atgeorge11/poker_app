@@ -17,6 +17,7 @@ class Hand_Controller():
         self.deck = Deck()
         self.table = []
         self.pot = 0
+        self.side_pots = {}
         self.hands = {}
 
         self.message_processor = game_state.message_processor
@@ -63,14 +64,11 @@ class Hand_Controller():
     def handle_bet(self, amt):
         amt = int(amt)
         perform_end_check = True
-        bet = self.current_bet - self.current_player.bet
-        if amt != -1: #if the player raised
-            print("betting")
+        if amt > self.current_bet - self.current_player.bet: #if the player raised
             self.current_last_better = self.current_player
-            self.current_bet += amt
             perform_end_check = False
-            bet += amt
-        self.current_player.place_bet(bet)
+            self.current_bet = self.current_player.bet + amt
+        self.current_player.place_bet(amt)
         self.emit_response(False)
         time.sleep(1)
         self.handle_player_transition(perform_end_check)
@@ -91,28 +89,57 @@ class Hand_Controller():
         time.sleep(1)
 
         #Check if there is only one player left
-        in_players = self.count_in_players()
+        in_players = []
+        for player in self.count_in_players():
+            in_players.append((player.id, 1000))
         if len(in_players) == 1:
-            self.end_hand(in_players[0])
+            self.collect_bets()
+            self.end_hand(in_players)
         else:
             self.handle_player_transition(perform_end_check)
 
     """handle transitions between players in a round of betting"""
     def handle_player_transition(self, perform_end_check):
-        self.next_player()
-        if perform_end_check == True and self.current_player is self.current_last_better:
-            print('hit end check')
-            self.current_player = None
-            self.collect_bets()
-            self.current_bet = 0
-            self.emit_response(False)
-            self.next()
-        else:
-            print('passed end check')
-            self.emit_response(True)
+        has_moved_once = False
+        while has_moved_once == False or ( self.current_player is not None and self.current_player.status == 'all_in'):
+            has_moved_once = True
+            self.next_player()
+            if perform_end_check == True and self.current_player is self.current_last_better:
+                self.current_player = None
+                self.collect_bets()
+                self.current_bet = 0
+                self.emit_response(False)
+                self.next()
+            else:
+                self.emit_response(True)
 
     """Collects bets and deposit them in the pot"""
     def collect_bets(self):
+        bets = []
+        for player in self.game_state.players:
+            if player.bet > 0:
+                bets.append((player.id, player.bet))
+        
+        def player_sort_key (player_tuple):
+            return player_tuple[1]
+
+        bets.sort(key=player_sort_key)
+
+        #collect any side pots
+        for player in self.game_state.players:
+            if player.status == 'all_in' and player.bet > 0:
+                my_bet = 0
+                bet_sum = 0
+                for player_tuple in bets:
+                    if my_bet == 0:
+                        bet_sum += player_tuple[1]
+                    else:
+                        bet_sum += my_bet
+                    if player_tuple[0] == player.id:
+                        my_bet = player_tuple[1]
+                self.side_pots[player.id] = self.pot + bet_sum
+
+        #collect the main pots
         for player in self.game_state.players:
             self.pot += player.bet
             player.bet = 0
@@ -121,7 +148,15 @@ class Hand_Controller():
     def count_in_players(self):
         in_players = []
         for player in self.game_state.players:
-            if player.status == 'in':
+            if player.status == 'in' or player.status =='all_in':
+                in_players.append(player)
+        return in_players
+
+    """returns a list of players still in the game"""
+    def count_playing_players(self):
+        in_players = []
+        for player in self.game_state.players:
+            if player.status == 'in' or player.status =='all_in' or player.status == 'fold':
                 in_players.append(player)
         return in_players
 
@@ -144,14 +179,29 @@ class Hand_Controller():
         self.set_first_better()
         self.emit_response(True)
 
-    """Score the hand and return the scores to the client"""
+    """Score the hand and end the hand"""
     def score_hand(self):
         self.current_player = None
         self.emit_response(False)
         time.sleep(1)
         scores = Validator.validate(self.hands, self.table)
-        print(scores)
 
+        int_scores = list(map(lambda x: (x[0], int(x[1], 16)), scores.items()))
+        int_scores.sort(key=lambda x: x[1], reverse=True)
+
+        self.end_hand(int_scores)
+
+        """
+        players_ranked = map(lambda x: , int_scores)
+        max_score = max(list(int_scores))
+        winner_ids = []
+        for idx in scores:
+            if int(scores[idx], 16) == max_score:
+                winner_ids.append(idx)
+        
+        winners = map(lambda x: self.game_state.players[int(x)], winner_ids)
+        self.end_hand(list(winners))
+        """
 
     """run the next phase of the hand"""
     def next(self):
@@ -178,19 +228,78 @@ class Hand_Controller():
     """Set the correct first better"""
     def set_first_better(self):
         self.current_player = self.game_state.dealer
-        if self.current_player.status != "in":
-            self.next_player()
+        self.next_player()
+        self.current_last_better = self.current_player
 
     """move to the next player still in the hand"""
     def next_player(self):
         self.current_player = self.game_state.get_next_in_player(self.current_player)
 
     """end the hand"""
-    def end_hand(self, winner):
-        self.collect_bets()
-        winner.chips += self.pot
-        self.pot = 0
-        self.emit_response(False)
-        time.sleep(1)
-        self.game_state.start_hand()
+    def end_hand(self, sorted_players):
 
+        #create a list of all side pots from smallest to largest
+        sorted_pots = list(map(lambda x: (x[0], x[1]), self.side_pots.items()))
+        sorted_pots.sort(key=lambda x: x[1])
+
+        #add the main pot to it for each remaining player
+        print(self.side_pots)
+        for player in sorted_players:
+            print(player)
+            if int(player[0]) not in self.side_pots:
+                sorted_pots.append((int(player[0]), self.pot))
+
+        print(sorted_pots)
+
+        #amass the current winners
+        winners = []
+        high_score = sorted_players[0][1]
+        tracker = 0
+
+        while tracker < len(sorted_players) and sorted_players[tracker][1] == high_score:
+            winners.append(int(sorted_players[tracker][0]))
+            tracker += 1
+
+        num_winners = len(winners)
+
+        #allot each pot from smallest to largest
+        for pot in sorted_pots:
+            #if the owner of the pot is a winner
+            if self.pot > 0 and pot[0] in winners:
+                winnings = min(pot[1], self.pot) / num_winners
+                self.game_state.players[pot[0]].chips += winnings
+                self.pot -= winnings
+                #remove player from winners
+                winners.remove(pot[0])
+                #get next set of winners if there are none left
+                if len(winners) == 0 and tracker < len(sorted_players):
+                    high_score = sorted_players[tracker][1]
+                    while tracker < len(sorted_players) and sorted_players[tracker][1] == high_score:
+                        winners.append(int(sorted_players[tracker][0]))
+                        tracker += 1
+                    num_winners = len(winners)
+
+        """
+        num_winners = len(winners)
+        winnings = self.pot / num_winners
+
+        #give the winnings to the correct players
+        for player in winners:
+            self.game_state.players[int(player)].chips += winnings
+        """
+
+        #remove players with no chips from the game
+        for player in self.game_state.players:
+            if player.chips == 0:
+                player.status = 'out'
+
+        #self.pot = 0
+        self.emit_response(False)
+        time.sleep(2)
+
+        #start the next hand or end the game depending on number of remaining players
+        in_players = self.count_playing_players()
+        if len(in_players) > 1:
+            self.game_state.start_hand()
+        else:
+            self.message_processor.broadcast_end_game(in_players[0].id)

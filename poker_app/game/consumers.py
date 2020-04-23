@@ -3,6 +3,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
 from .poker_logic.validator.validator import Validator
+from .poker_logic.player_processor import Player_Processor
 
 import threading
 
@@ -12,15 +13,10 @@ class GameConsumer(WebsocketConsumer):
     def connect(self):
         self.game_name = self.scope['url_route']['kwargs']['game_name']
         self.game_group_name = 'game_%s' % self.game_name
+        self.game_state = None
         self.username = self.scope['user'].username
         self.id = None
         self.user_type = None
-
-        print(Validator.validate({
-            '1': ['3S', 'JH'],
-            '2': ['3D', 'KD'],
-            '3': ['JC', 'JD']   
-        }, ['4S', '6S', '7S', 'JS', '5C']))
 
         #Deny connection if game doesn't exist or is already in play
         if self.game_name not in game_states or game_states[self.game_name].playing == True:
@@ -56,10 +52,12 @@ class GameConsumer(WebsocketConsumer):
             pass
 
         #Remove player from game model
-        if self.game_state is not None:
-            self.game_state.remove_player(self.game_state.players[self.id])
+        if self.game_state is  None:
+            return
+        
+        self.game_state.remove_player(self.game_state.players[self.id])
 
-        print('player leaving', self.game_state.players)
+        print('player leaving')
 
         #Send message to remaining players
         self.broadcast({
@@ -67,7 +65,7 @@ class GameConsumer(WebsocketConsumer):
             'message': {
                 'type': 'user_type_response',
                 'user_type': self.user_type,
-                'players': self.game_state.players
+                'players': Player_Processor.process_players(self.game_state.players)
             }
         })
 

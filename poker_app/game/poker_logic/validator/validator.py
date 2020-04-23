@@ -228,28 +228,3 @@ class Validator():
             phase -= 1
 
         return score
-
-        """        
-        {
-            '1':{
-                'cards': ['3S', '4S', '5S', '6S', '7H', '8S', '9S'],
-                'data': {
-                    'sets': {
-                        'pairs': [],
-                        'threes': [],
-                        'fours': []
-                    },
-                    'flushes': ['3S', '4S', '5S', '6S', '8S', '9S']
-                }
-            },
-            '2': {
-                'cards': ['3S', '3D', '6S', '7H', '8S', '9S', 'KH'],
-                'data': {
-                    'sets': {
-                        'pairs': [['3S', '3D']],
-                        'threes': [],
-                        'fours': []
-                    },
-                    'flushes': []
-                    }}, '3': {'cards': ['3S', '6S', '7H', '8S', '9S', 'JC', 'JD'], 'data': {'sets': {'pairs': [['JC', 'JD']], 'threes': [], 'fours': []}, 'flushes': []}}}
-        """

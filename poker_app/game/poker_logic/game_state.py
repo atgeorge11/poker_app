@@ -59,7 +59,7 @@ class Game_State():
     """returns the next player still in the hand"""
     def get_next_in_player(self, player):
         next_player = player.get_next()
-        while(next_player.status != 'in'):
+        while(next_player.status != 'in' and next_player.status != 'all_in'):
             next_player = next_player.get_next()
         return next_player
 
@@ -86,15 +86,6 @@ class Game_State():
         for player in self.players:
             if player.status != 'out':
                 player.status = 'in'
+        self.dealer = self.get_next_in_player(self.dealer)
         self.hand_controller = Hand_Controller(self)
         self.hand_controller.next()
-
-    """Method to deal a hand"""
-    def deal(self):
-        #Start with player to the left of the dealer
-        current_player = self.get_next_in_player(self.players[self.dealer])
-        while current_player['id'] != self.dealer:
-            self.hands[str(current_player['id'])] = [self.draw_card(), self.draw_card()]
-            current_player = self.get_next_in_player(current_player)
-        #Also deal to the dealer
-        self.hands[str(current_player['id'])] = [self.draw_card(), self.draw_card()]
