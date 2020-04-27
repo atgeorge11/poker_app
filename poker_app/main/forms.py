@@ -9,4 +9,4 @@ class UserForm(forms.ModelForm):
         labels = {'username': 'Username:'}
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label='Username:')
+    username = forms.CharField(label='Username:', widget=forms.TextInput(attrs={'class': 'text'}))

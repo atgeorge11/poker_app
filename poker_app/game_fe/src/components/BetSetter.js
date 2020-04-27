@@ -1,4 +1,5 @@
 import React from 'react';
+import '../css/BetSetter.css';
 
 class BetSetter extends React.Component{
     constructor(props) {
@@ -103,24 +104,24 @@ class BetSetter extends React.Component{
 
         return (
             <div>
-                <table>
-                    <tr>
+                <table className="betsetter">
+                    <tr className="betsetterArrow">
                         {this.state.digits.map( (digit, idx) => (
-                            <th onClick={(() => {this.increase(idx)})}>
+                            <th onClick={(() => {this.increase(idx)})} className="betsetterCol">
                                 ^
                             </th>
                         ))}
                     </tr>
-                    <tr>
+                    <tr className="betsetterNum">
                         {this.state.digits.map(digit => (
-                            <th>
+                            <th className="betsetterCol">
                                 {digit}
                             </th>
                         ))}
                     </tr>
-                    <tr>
+                    <tr className="betsetterArrow">
                         {this.state.digits.map( (digit, idx) => (
-                            <th onClick={(() => {this.decrease(idx)})}>
+                            <th onClick={(() => {this.decrease(idx)})} className="betsetterCol">
                                 v
                             </th>
                         ))}

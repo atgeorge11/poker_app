@@ -2,6 +2,8 @@ import React from 'react';
 import createSocket from './sockets';
 import Game from './components/Game';
 
+import './App.css';
+
 const App = props => {
 
   let gameName = window.location.href;
@@ -12,10 +14,9 @@ const App = props => {
   }
 
   return (
-    <div className="App">
-      GAME!
+    <div className="main">
+      <span class='table'></span>
       <Game socket={socket}/>
-      <button onClick={() => {socket.send({message: "a message"})}}>Send a message</button>
     </div>
   );
 }

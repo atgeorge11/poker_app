@@ -1,9 +1,15 @@
 {% extends 'main/base.html' %}
 
 {% block content %}
+<div class='element text'>
+    You have been logged out.
+</div>
 
-<p>You have been logged out.</p>
 
-<a href="{% url 'main:index' %}">Home</a>
+<a href="{% url 'main:index' %}" class='element'>
+    <span class='button text'>
+        HOME
+    </span>
+</a>
 
 {% endblock content %}

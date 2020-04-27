@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import BetSetter from './BetSetter';
+import '../css/Me.css';
 
 const Me = props => {
 
-    let menu = (<div></div>);
+    let menu = (<div className='menu'></div>);
 
     if (props.myTurn) {
         menu = (
-            <div>
+            <div className='menu'>
                 <BetSetter
                     blind={props.blind}
                     chips={props.data.chips}
@@ -52,18 +53,6 @@ const Me = props => {
             ))}
         </div>
         {menu}
-        
-        {/* {!betting ?
-            menu : 
-            <BetSetter
-                blind={props.blind}
-                chips={props.data.chips}
-                currentBet={props.currentBet}
-                submitBet={props.submitBet}
-                cancel={() => {setBetting(false)}}
-            />
-        } */}
-
     </div>
 )}
 

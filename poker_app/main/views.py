@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
-from django.contrib.auth.forms import UserCreationForm
+#from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -14,7 +14,7 @@ def register(request):
     """Register a new user"""
     if request.method != 'POST':
         #Display blank registration form
-        form = UserForm()
+        form = LoginForm()
     else:
         #Process completed form
         form = UserForm(data=request.POST)
@@ -31,6 +31,9 @@ def register(request):
 
 def log_in(request):
     """Login page"""
+    if request.user.is_authenticated == True:
+        return redirect('main:index')
+
     if request.method != 'POST':
         #Display an empty form
         form = LoginForm()
@@ -42,7 +45,7 @@ def log_in(request):
         try:
             user = User.objects.get(username=username)
             login(request, user)
-            return render(request, 'main/index.html')
+            return redirect('main:index')
 
         except ObjectDoesNotExist:
             form = LoginForm()

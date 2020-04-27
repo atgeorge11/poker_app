@@ -4,6 +4,8 @@ import Table from './Table';
 import Me from './Me';
 import Winner from './Winner';
 
+import '../css/Game.css';
+
 class Game extends React.Component {
     constructor (props) {
 

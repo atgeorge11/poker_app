@@ -1,0 +1,24 @@
+.betsetter {
+    position: absolute;
+    top: 5%;
+    left: 30%;
+    height: 90%;
+    width: 200px;
+    border-radius: 5%;
+}
+
+.betsetterArrow {
+    width: 100%;
+    height: 25%
+    display: flex;
+}
+
+.betsetterNum {
+    width: 100%;
+    height: 50%;
+    display: flex;
+}
+
+.betsetterCol {
+    flex: 1;
+}

@@ -2,8 +2,8 @@
 
 {% block content %}
 
-<div class='title'>
-    <h1>Poker</h1>
+<div class="title">
+    <h1>POKER</h1>
 </div>
 
 
@@ -11,43 +11,51 @@
 
     <div class='menu'>
 
-        <div >
-            <p>Join a game:</p>
+        <div class='element'>
+            <p class='text'>Join a game:</p>
             <form id="join_form" method='post' action="{% url 'game:join' %}">
                 {% csrf_token %}
-                <input type="text" placeholder="Enter your game's name' here" id="join_game" name="game_name_join">
-                <button type="submit" id="join_submit">Submit</button>
+                <input
+                    type="text"
+                    placeholder="Enter a game name"
+                    id="join_game" name="game_name_join"
+                    class='text input'
+                >
+                <button type="submit" id="join_submit" class='text button'>SUBMIT</button>
             </form>
         </div>
 
-        <div>
-            <p>Create a game:</p>
+        <div class='element'>
+            <p class='text'>Create a game:</p>
             <form id="create_form" method='post' action="{% url 'game:create' %}">
                 {% csrf_token %}
-                <input type="text" placeholder="Enter a game name here" id="create_game" name="game_name_create">
-                <button type="submit" id="create_submit">Submit</button>
+                <input
+                    type="text"
+                    placeholder="Enter a game name"
+                    id="create_game"
+                    name="game_name_create"
+                    class='text input'>
+                <button type="submit" id="create_submit" class='text button'>SUBMIT</button>
             </form>
         </div>
 
-        <div>
-            <a href="{% url 'main:log_out' %}">Log out</a>
+        <div class='element'>
+            <a href="{% url 'main:log_out' %}" class='text button'>LOG OUT</a>
         </div>
 
     </div>
 
 {% else %}
     <div class='menu'>
-        <div>
-            <a href="{% url 'main:log_in' %}">Log in</a>
-        </div>
 
-        <div>
-            <a href="{% url 'main:register' %}">Create an account</a>
-        </div>
+            <div class='largerElement'>
+                <a href="{% url 'main:log_in' %}" class='text button'>LOG IN</a>
+            </div>
 
-       <script>
-            document.getElement
-        </script>
+            <div class='largerElement'>
+                <a href="{% url 'main:register' %}" class='text button'>CREATE AN ACCOUNT</a>
+            </div>
+
     </div>
 
 {% endif %}

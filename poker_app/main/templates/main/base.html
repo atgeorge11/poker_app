@@ -1,11 +1,13 @@
-<!DOCTYPE=html>
+{% load static %}
+
+<!DOCTYPE html>
 <html>
     <head>
         <title>Poker</title>
-        <link rel="stylesheet" href="{% static 'css/main.css' %}">
+        <link rel="stylesheet" href="{% static 'main/css/main.css' %}">
     </head>
     <body>
-        <div class="body">
+        <div id="main">
             {% block content %}
             {% endblock content %}
         </div>
