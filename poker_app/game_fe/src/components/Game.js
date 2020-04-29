@@ -17,6 +17,7 @@ class Game extends React.Component {
             playing: false,
             listening: false,
             players: [],
+            startingChips: 0,
             currentPlayer: null,
             playersWithCards: [],
             table: [],
@@ -50,7 +51,8 @@ class Game extends React.Component {
                 userType: userType,
                 username: username,
                 id: id,
-                players: message.players
+                players: message.players,
+                startingChips: message.players[0].chips
             })
         } else {
             //Messages updating the game state
@@ -109,7 +111,7 @@ class Game extends React.Component {
 
         console.log(this.state)
         return (
-            <div>
+            <div className="game">
                 <div>
                     GAME
                 </div>
@@ -144,6 +146,8 @@ class Game extends React.Component {
                         submitBet={this.submitBet.bind(this)}
                         submitFold={this.submitFold.bind(this)}
                         myTurn={this.state.listening && this.state.id === this.state.currentPlayer}
+                        startingChips={this.state.startingChips}
+                        playerNum={this.state.players.length}
                     />
                 </div>
 

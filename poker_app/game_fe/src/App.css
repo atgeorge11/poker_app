@@ -21,6 +21,7 @@ html, body {
   min-height: 400px;
   min-width: 400px;
   overflow: hidden;
+  z-index: 2;
 }
 
 .table {
@@ -33,5 +34,6 @@ html, body {
   border-top-left-radius: 50%;
   border-top-right-radius: 50%;
   background-color: green;
+  z-index: -1;
 
 }

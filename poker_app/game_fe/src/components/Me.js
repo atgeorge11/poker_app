@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BetSetter from './BetSetter';
+import Chips from './Chips';
 import '../css/Me.css';
 
 const Me = props => {
@@ -15,22 +16,33 @@ const Me = props => {
                     currentBet={props.currentBet}
                     myBet={props.data.bet}
                     submitBet={props.submitBet}
+                    submitFold={props.submitFold}
                 />
-                <button onClick={props.submitFold}>Fold</button>
             </div>
         )
-        
-        // (
-        //     <div>
-        //         <button onClick={props.submitCall}>{allIn ? "All-In" : "Call"}</button>
-        //         <button onClick={allIn ? null :() => {setBetting(true)}}>Raise</button>
-        //         <button onClick={props.submitFold}>Fold</button>
-        //     </div>
-        // );
     } 
 
     return (
     <div>
+        <div className="meContainer">
+            {props.dealer ? (
+                <div className="dealerChip"></div>
+            ) : null}
+            <div>
+                {props.data.player}
+            </div>
+            <div>
+                <Chips
+                    chips={props.data.chips}
+                    startingChips={props.startingChips}
+                    playerNum={props.playerNum}
+                />
+            </div>
+            <div>
+                {props.data.chips}
+            </div>
+        </div>
+
         <div>
             {props.data.bet === 0 ? " " : props.data.bet}
         </div>

@@ -190,19 +190,7 @@ class Hand_Controller():
         int_scores.sort(key=lambda x: x[1], reverse=True)
 
         self.end_hand(int_scores)
-
-        """
-        players_ranked = map(lambda x: , int_scores)
-        max_score = max(list(int_scores))
-        winner_ids = []
-        for idx in scores:
-            if int(scores[idx], 16) == max_score:
-                winner_ids.append(idx)
         
-        winners = map(lambda x: self.game_state.players[int(x)], winner_ids)
-        self.end_hand(list(winners))
-        """
-
     """run the next phase of the hand"""
     def next(self):
         phases = [

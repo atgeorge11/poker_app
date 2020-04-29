@@ -103,11 +103,11 @@ class BetSetter extends React.Component{
         }
 
         return (
-            <div>
+            <div className='betsetterContainer'>
                 <table className="betsetter">
                     <tr className="betsetterArrow">
                         {this.state.digits.map( (digit, idx) => (
-                            <th onClick={(() => {this.increase(idx)})} className="betsetterCol">
+                            <th onClick={(() => {this.increase(idx)})} className="betsetterCol betsetterClick">
                                 ^
                             </th>
                         ))}
@@ -121,13 +121,22 @@ class BetSetter extends React.Component{
                     </tr>
                     <tr className="betsetterArrow">
                         {this.state.digits.map( (digit, idx) => (
-                            <th onClick={(() => {this.decrease(idx)})} className="betsetterCol">
+                            <th onClick={(() => {this.decrease(idx)})} className="betsetterCol betsetterClick">
                                 v
                             </th>
                         ))}
                     </tr>
                 </table>
-                <button onClick={() => {this.props.submitBet(this.processDigits(this.state.digits))}}>{call}</button>
+                <div className='betsetterButtons'>
+                    <div
+                        onClick={() => {this.props.submitBet(this.processDigits(this.state.digits))}}
+                        className='betsetterButton betsetterClick'
+                    >
+                        {call}
+                    </div>
+                    <div onClick={this.props.submitFold} className='betsetterButton betsetterClick'>Fold</div>
+                </div>
+                
             </div>
         )
     }

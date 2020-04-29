@@ -4,6 +4,15 @@
     left: 3%;
     height: 100px;
     width: 96%;
-    border-radius: 10%;
+    border-radius: 10px;
     background-color: #630;
+    vertical-align: center;
+}
+
+.meContainer {
+    height: 20%;
+    width: 20%;
+    position: absolute;
+    top: 50%;
+    left: 40%;
 }
