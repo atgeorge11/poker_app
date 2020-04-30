@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import BetSetter from './BetSetter';
 import Chips from './Chips';
+import Card from './Card';
 import '../css/Me.css';
 
 const Me = props => {
@@ -31,13 +32,30 @@ const Me = props => {
             <div>
                 {props.data.player}
             </div>
-            <div>
-                <Chips
-                    chips={props.data.chips}
-                    startingChips={props.startingChips}
-                    playerNum={props.playerNum}
-                />
-            </div>
+            <table className='meTable'>
+                <tr>
+                    <td className='meTableCell'>
+                        <Chips
+                            chips={props.data.chips}
+                            startingChips={props.startingChips}
+                            playerNum={props.playerNum}
+                        />
+                    </td>
+                    <td className='meTableCell'>
+                        <table className='myCards'>
+                            <tr>
+                                {props.hand.map(card => (
+                                    <td className='myCard'>
+                                        <Card card={card}/>
+                                    </td>
+                                ))}
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
             <div>
                 {props.data.chips}
             </div>

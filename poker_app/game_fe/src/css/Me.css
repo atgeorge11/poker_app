@@ -10,9 +10,26 @@
 }
 
 .meContainer {
-    height: 20%;
-    width: 20%;
+    height: 25%;
+    width: 80%;
     position: absolute;
     top: 50%;
-    left: 40%;
+    left: 10%;
+}
+
+.myCard {
+    height: '20vw';
+    width: '14vw';
+}
+
+.meTable {
+    position: 'absolute';
+    top: 10%;
+    height: 90%;
+    width: 100%;
+}
+
+.meTableCell {
+    width: 50%;
+    position: 'absolute';
 }

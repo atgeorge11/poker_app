@@ -27,10 +27,10 @@ html, body {
 .table {
   position: absolute;
   display: block;
-  top: 25%;
-  left: -10%;
-  width: 120%;
-  height: 75%;
+  top: 10%;
+  left: -5%;
+  width: 110%;
+  height: 90%;
   border-top-left-radius: 50%;
   border-top-right-radius: 50%;
   background-color: green;
