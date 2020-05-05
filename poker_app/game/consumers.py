@@ -51,21 +51,33 @@ class GameConsumer(WebsocketConsumer):
             #end game
             pass
 
-        #Remove player from game model
+        #Update player's status in the game model
         if self.game_state is  None:
             return
-        
+
+        """
+        thread = threading.Thread(
+            target=self.game_state.remove_player,
+            args=(self.game_state.players[self.id])
+        )
+        thread.start()
+        """
+
         self.game_state.remove_player(self.game_state.players[self.id])
 
         print('player leaving')
 
         #Send message to remaining players
+
+        hands = {}
+        if self.game_state.hand_controller is not None:
+            hands = self.game_state.hand_controller.hands
         self.broadcast({
             'type': 'message',
             'message': {
                 'type': 'user_type_response',
                 'user_type': self.user_type,
-                'players': Player_Processor.process_players(self.game_state.players)
+                'players': Player_Processor.process_players(self.game_state.players, hands, False)
             }
         })
 

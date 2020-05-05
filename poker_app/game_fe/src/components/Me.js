@@ -26,61 +26,51 @@ const Me = props => {
     return (
     <div>
         <div className="meContainer">
-            {props.dealer ? (
-                <div className="dealerChip"></div>
-            ) : null}
-            <div>
+
+            <div className='myBetContainer'>
+                <div className='myDealer'>
+                    {props.dealer ? (
+                    <span className="dealerChip"></span>
+                    ) : null}
+                </div>
+                <div className='myBet'>
+                        <div className='myBetImage'>
+                            <Chips
+                                chips={props.data.bet}
+                                startingChips={props.startingChips}
+                                playerNum={props.playerNum}
+                            />
+                        </div>
+                        <div className='myBetNumber'>
+                            {props.data.bet ? props.data.bet : ''}
+                        </div>
+                </div>
+            </div>
+
+            <div className='meTable'>
+                    <div className='meTableCell left'>
+                        <div className='myChipsImage'>
+                            <Chips
+                                chips={props.data.chips}
+                                startingChips={props.startingChips}
+                                playerNum={props.playerNum}
+                            />
+                        </div>
+                        <div className='myChips'>
+                            {props.data.chips}
+                        </div>
+                    </div>
+                    <div className='meTableCell right'>
+                        {props.hand.map(card => (
+                            <div className='myCard'>
+                                <Card card={card} fontSize='5.5' borderRadius='10px'/>
+                            </div>
+                        ))}
+                    </div>
+            </div>
+            <div className='meName'>
                 {props.data.player}
             </div>
-            <table className='meTable'>
-                <tr>
-                    <td className='meTableCell'>
-                        <Chips
-                            chips={props.data.chips}
-                            startingChips={props.startingChips}
-                            playerNum={props.playerNum}
-                        />
-                    </td>
-                    <td className='meTableCell'>
-                        <table className='myCards'>
-                            <tr>
-                                {props.hand.map(card => (
-                                    <td className='myCard'>
-                                        <Card card={card}/>
-                                    </td>
-                                ))}
-                            </tr>
-
-                        </table>
-                    </td>
-                </tr>
-            </table>
-
-            <div>
-                {props.data.chips}
-            </div>
-        </div>
-
-        <div>
-            {props.data.bet === 0 ? " " : props.data.bet}
-        </div>
-        <p> </p>
-        <div>
-            {props.data.player}
-        </div>
-        <div>
-            {props.data.chips}
-        </div>
-        <div>
-            {props.dealer ? "Dealer" : " "}
-        </div>
-        <div>
-            {props.hand.map(card => (
-                <React.Fragment>
-                    {console.log(card)}
-                    {card} 
-                </React.Fragment>
-            ))}
         </div>
         {menu}
     </div>

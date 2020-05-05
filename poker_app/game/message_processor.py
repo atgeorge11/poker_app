@@ -12,13 +12,14 @@ class Message_Processor():
         self.broadcast = broadcast
 
         #Create a method to generalize transmission of game state info to clients
-        def broadcast_game_state(message_type, current_player=-1, listening=False):
+        def broadcast_game_state(message_type, current_player=-1, listening=False, showCards=False):
+            print('dealer', self.game_state.dealer.id)
             broadcast({
                 'type': message_type,
                 'state': {
                     'playing': True,
                     'dealer': self.game_state.dealer.id,
-                    'players': Player_Processor.process_players(self.game_state.players),
+                    'players': Player_Processor.process_players(self.game_state.players, self.game_state.hand_controller.hands, showCards),
                     'playersWithCards': self.get_players_with_cards(),
                     'currentPlayer': current_player,
                     'table': self.game_state.hand_controller.table,
@@ -33,13 +34,14 @@ class Message_Processor():
         self.broadcast_game_state = broadcast_game_state
 
     def broadcast_end_game(self, winner_id):
+        print('broadcasting end game')
         self.broadcast({
             'type': 'endGame',
             'winner': winner_id,
             'state': {
                 'playing': True,
                 'dealer': -1,
-                'players': Player_Processor.process_players(self.game_state.players),
+                'players': Player_Processor.process_players(self.game_state.players, self.game_state.hand_controller.hands, True),
                 'playersWithCards': [],
                 'currentPlayer': -1,
                 'table': [],
@@ -66,7 +68,7 @@ class Message_Processor():
             'type': 'user_type_response',
             'user_type': user_type,
             'id': self.game_state.players[-1].id,
-            'players': Player_Processor.process_players(self.game_state.players)
+            'players': Player_Processor.process_players(self.game_state.players, {}, False)
         })
 
     def process_start_game (self):

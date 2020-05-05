@@ -41,10 +41,12 @@ class Game extends React.Component {
             let userType = this.state.userType;
             let username = this.state.username;
             let id = this.state.id;
+            let startingChips = this.state.startingChips;
             if (userType === null) {
                 userType = message.user_type;
                 username = message.username;
                 id = message.id;
+                startingChips = message.players[0].chips
             }
     
             this.setState({
@@ -52,7 +54,7 @@ class Game extends React.Component {
                 username: username,
                 id: id,
                 players: message.players,
-                startingChips: message.players[0].chips
+                startingChips: startingChips
             })
         } else {
             //Messages updating the game state
@@ -116,27 +118,29 @@ class Game extends React.Component {
                     GAME
                 </div>
 
-                <p></p>
-
-                <table>
-                    <tr>
-                    {this.otherPlayers().map(player => (
-                        <td><Player player={player} dealer={(player.id === this.state.dealer)}/></td>
+                <div className='otherPlayers'>
+                    {this.otherPlayers().map((player, id) => (
+                        <Player
+                            player={player}
+                            id={id}
+                            playerNum={this.otherPlayers().length}
+                            startingChips={this.state.startingChips}
+                            dealer={this.state.dealer === player.id}
+                        />
                     ))}
-                    </tr>
-                </table>
+                </div>
 
-                <p> </p>
-
-                {this.state.winner ? 
+                {this.state.winner !== undefined ? 
                     <Winner username={this.state.players[this.state.winner].player}/> :
-                    <Table table={this.state.table} pot={this.state.pot} />
+                    <Table
+                        table={this.state.table}
+                        pot={this.state.pot}
+                        startingChips={this.state.startingChips}
+                        playerNum={this.state.players.length}
+                    />
                 }
 
-                <p> </p>
-
                 <div>
-                    {console.log("hand", this.state.hand)}
                     <Me
                         data={this.state.players[this.state.id]}
                         dealer={(this.state.id === this.state.dealer)}
@@ -151,10 +155,8 @@ class Game extends React.Component {
                     />
                 </div>
 
-                <p> </p>
-
                 {!this.state.playing && this.state.userType === 'host' ?
-                    <button type="button" onClick={() => {
+                    <button type="button" className='startButton' onClick={() => {
                         this.props.socket.send({
                             'type': 'start_game'
                         })

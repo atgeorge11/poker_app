@@ -1,3 +1,16 @@
 .game {
     z-index: 5;
 }
+
+.otherPlayers {
+    width: 100%;
+    height: 35%;
+    position: absolute;
+    top: 5%;
+
+}
+
+.startButton {
+    position: absolute;
+    top: 50%;
+}

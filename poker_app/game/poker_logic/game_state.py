@@ -44,6 +44,18 @@ class Game_State():
 
     """remove a player from the game"""
     def remove_player(self, player):
+        #Set player's status to 'out'
+        player.status = 'out'
+        player.chips = 0
+
+        print('made it to remove_player')
+
+        if self.hand_controller is not None:
+            print('hand controller is operating')
+            self.hand_controller.hands[str(player.id)] = []
+            self.hand_controller.handle_player_leaving(player.id)
+
+        """
         #Reconnect other noes of linked list before deleting
         if len(self.players) > 1:
             player.get_prev().set_next(player.get_next())
@@ -55,6 +67,7 @@ class Game_State():
 
         #Delete the player
         del player
+        """
 
     """returns the next player still in the hand"""
     def get_next_in_player(self, player):

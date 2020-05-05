@@ -34,15 +34,16 @@ const Chips = props => {
                 bottom: '0',
                 backgroundColor: 'red',
                 border: '1px solid black',
+                borderBottom: '0px'
             });
             stylesTop.push({
                 backgroundColor: 'red',
                 borderRadius: '50%',
                 position: 'absolute',
-                bottom: (stacks[i]) + '%',
+                bottom: (stacks[i] - 5) + '%',
                 height: '10%',
                 width: '100%',
-                border: '1px solid black'
+                border: '1px solid black',
             });
             stylesBottom.push({
                 backgroundColor: 'red',
@@ -64,11 +65,9 @@ const Chips = props => {
 
     return (
         <div style={{
-            width: '50%',
-            height: '50%',
-            position: 'absolute',
-            top: '50%',
-            left: '25%'
+            width: '100%',
+            height: '100%',
+            position: 'relative',
         }}>
             <div style={{
                 position: 'absolute',
@@ -77,9 +76,9 @@ const Chips = props => {
                 left: '16%',
                 bottom: '20%',
             }}>
+                <div style={stylesBottom[0]}></div>
                 <div style={styles[0]}></div>
                 <div style={stylesTop[0]}></div>
-                <div style={stylesBottom[0]}></div>
             </div>
 
             <div style={{
@@ -89,9 +88,9 @@ const Chips = props => {
                 left: '48%',
                 bottom: '20%',
             }}>
+                <div style={stylesBottom[1]}></div>
                 <div style={styles[1]}></div>
                 <div style={stylesTop[1]}></div>
-                <div style={stylesBottom[1]}></div>
             </div>
 
             <div style={{
@@ -101,9 +100,9 @@ const Chips = props => {
                 left: '0%',
                 bottom: '10%',
             }}>
+                <div style={stylesBottom[2]}></div>
                 <div style={styles[2]}></div>
                 <div style={stylesTop[2]}></div>
-                <div style={stylesBottom[2]}></div>
             </div>
 
             <div style={{
@@ -113,9 +112,9 @@ const Chips = props => {
                 left: '32%',
                 bottom: '10%',
             }}>
+                <div style={stylesBottom[3]}></div>
                 <div style={styles[3]}></div>
                 <div style={stylesTop[3]}></div>
-                <div style={stylesBottom[3]}></div>
             </div>
 
             <div style={{
@@ -125,9 +124,9 @@ const Chips = props => {
                 left: '64%',
                 bottom: '10%',
             }}>
-                <div style={styles[4]}></div>
-                <div style={stylesTop[4]}></div>
                 <div style={stylesBottom[4]}></div>
+                <div style={styles[4]}></div>
+                <div style={stylesTop[4]}></div> 
             </div>
 
             <div style={{
@@ -137,9 +136,9 @@ const Chips = props => {
                 left: '16%',
                 bottom: '0%',
             }}>
-                <div style={styles[5]}></div>
-                <div style={stylesTop[5]}></div>
                 <div style={stylesBottom[5]}></div>
+                <div style={styles[5]}></div>
+                <div style={stylesTop[5]}></div>      
             </div>
 
             <div style={{
@@ -149,9 +148,9 @@ const Chips = props => {
                 left: '48%',
                 bottom: '0%',
             }}>
+                <div style={stylesBottom[6]}></div>
                 <div style={styles[6]}></div>
                 <div style={stylesTop[6]}></div>
-                <div style={stylesBottom[6]}></div>
             </div>
 
         </div>
